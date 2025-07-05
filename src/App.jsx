@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App bg-blue-900">
       <h1>Monitoring Dashboard</h1>
 
       {error && <p style={{ color: "red" }}>Erreur : {error}</p>}
