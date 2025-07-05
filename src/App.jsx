@@ -1,37 +1,41 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
 function App() {
   const [metrics, setMetrics] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetch("https://monitoring-backend-production-4e95.up.railway.app/api.php")
-      .then((res) => res.json())
+      .then((response) => response.json())
       .then((data) => {
         if (data.success) {
           setMetrics(data.metrics);
         } else {
-          console.error("Erreur API :", data.error);
+          setError(data.error || "Erreur inconnue");
         }
       })
-      .catch.error((err) => console.error("Fetch error:", err));
+      .catch((err) => setError(err.message));
   }, []);
 
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>Dernières Métrics</div>
-      <ul>
-        {metrics.map((m, index) => (
-          <li key={index}>
-            {m.timestamp} : {m.value}
-          </li>
-        ))}
-      </ul>
-    </>
+    <div className="App">
+      <h1>Monitoring Dashboard</h1>
+
+      {error && <p style={{ color: "red" }}>Erreur : {error}</p>}
+
+      {metrics.length > 0 ? (
+        <ul>
+          {metrics.map((metric, index) => (
+            <li key={index}>
+              {metric.timestamp} - {metric.value}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>Aucune métrique disponible.</p>
+      )}
+    </div>
   );
 }
 
